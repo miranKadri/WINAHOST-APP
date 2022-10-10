@@ -36,10 +36,10 @@ driver.find_element_by_xpath('//*[@id="App"]/div[1]/main/section/div[2]/div/div/
 print(f"reached page {url}")   
 
 # now extract the data from the page we reached on that website 
-for i in range(0,26):
+for i in range(0,25):
     ActionChains(driver).send_keys(Keys.SPACE).perform()
     time.sleep(1)
-for i in range(0,130):  
+for i in range(0,150):  
     ActionChains(driver).send_keys(Keys.UP).send_keys(Keys.UP).perform()
     
 props = driver.find_elements_by_class_name('re-CardPackPremium-info')  
@@ -47,19 +47,23 @@ print(props)
 
 with open('fotocasa.csv','w', encoding = 'utf-8') as f:
     wr = csv.writer(f, dialect = 'excel')
-    wr.writerow(['Sr.No.', 'Broker Name', 'Location', 'Price', 'Contact number'])
+    wr.writerow(['Sr.No.','Type','Location', 'Price', 'Decription', 'Broker Name', 'Contact number', 'Link'])
     n = 0
     for prop in props:  
         n+=1
         # ActionChains(driver).send_keys(Keys.UP).perform()
         # time.sleep(3)
         num = n
+        # //*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[7]/a
         name = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[1]/span/span[1]').text
+        type = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[2]/a/h3/span[1]').text.split('in')[0] 
         loc = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[2]/a/h3/span[1]').text.split('in')[1] 
         price = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[2]/a/h3/span[2]/span[1]/span').text    #xpath('re-CardPrice')
+        desc = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[2]/a/p/span').text
         contact = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/div[2]/div/div[1]/a/span/span[2]').text
+        link = prop.find_element_by_xpath(f'//*[@id="App"]/div[2]/div[1]/main/div/div[2]/section/article[{n}]/a').get_attribute('href')
         # print(num, name, loc, price, contact) 
-        wr.writerow([num, name, loc, price, contact])
+        wr.writerow([num, type, loc, price,desc, name, contact, link])
         # time.sleep(3)
     # ActionChains(driver).send_keys(Keys.UP).perform()
 
